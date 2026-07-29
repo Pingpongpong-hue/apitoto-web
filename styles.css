@@ -3648,3 +3648,49 @@ Pastikan jangan menghapus bagian ini:
     z-index: 9999 !important;
   }
 }
+
+/* =========================================
+   HANYA HEADER HITAM FREEZE DI HP
+========================================= */
+
+@media (max-width: 768px) and (orientation: portrait) {
+  :root {
+    --tinggi-header-hp: 280px;
+  }
+
+  .top-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+
+    width: 100% !important;
+    height: var(--tinggi-header-hp) !important;
+    margin: 0 !important;
+
+    z-index: 10000 !important;
+  }
+
+  /* Memberi tempat untuk header yang di-freeze */
+  body.halaman-utama {
+    padding-top: var(--tinggi-header-hp) !important;
+  }
+
+  /* Info terkini tidak di-freeze */
+  .info-bar {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+
+    width: 100% !important;
+    height: 38px !important;
+    margin: 0 !important;
+    transform: none !important;
+
+    z-index: 1 !important;
+  }
+
+  .website-layout {
+    padding-top: 0 !important;
+  }
+}
