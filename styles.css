@@ -3623,3 +3623,28 @@ Pastikan jangan menghapus bagian ini:
   bottom: 20px !important;
   background-size: cover !important;
 }
+/* PENGADUAN CUSTOMER — HP POSISI BERDIRI */
+@media (max-width: 768px) and (orientation: portrait) {
+  .top-header {
+    position: relative !important;
+  }
+
+  .btn-pengaduan {
+    position: absolute !important;
+    top: 6px !important;
+    right: 6px !important;
+    left: auto !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+    height: 24px !important;
+    margin: 0 !important;
+    padding: 3px 8px !important;
+
+    font-size: 9px !important;
+    white-space: nowrap !important;
+
+    transform: none !important;
+    z-index: 9999 !important;
+  }
+}
