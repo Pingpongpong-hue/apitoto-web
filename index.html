@@ -125,12 +125,43 @@
 
         <main class="content">
          <!-- Banner utama -->
-  <div class="gambar-tengah">
-  <img
-    src="https://i.postimg.cc/nrLJRK4j/gambar222.png"
-    alt="Banner utama"
-  />
+         <div class="gambar-tengah" id="bannerSlider">
+          <div class="banner-track" id="bannerTrack">
+
+            <!-- Banner pertama: gambar -->
+            <div class="banner-slide">
+              <img
+                src="https://i.postimg.cc/nrLJRK4j/gambar222.png"
+                alt="Banner pertama"
+                draggable="false"
+              />
+            </div>
+          
+          <!-- Banner kedua: video YouTube otomatis -->
+<div class="banner-slide banner-youtube">
+  <iframe
+    id="videoBannerUtama"
+    data-src="https://www.youtube.com/embed/xgrU5VkW_4Q?autoplay=1&mute=1&loop=1&playlist=xgrU5VkW_4Q&controls=0&rel=0&playsinline=1"
+    title="Video banner utama"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen
+  ></iframe>
 </div>
+          
+            <!-- Banner ketiga: gambar -->
+            <div class="banner-slide">
+              <img
+                src="LINK-GAMBAR-BANNER-KETIGA"
+                alt="Banner ketiga"
+                draggable="false"
+              />
+            </div>
+          
+          </div>
+        
+          <button class="banner-prev" type="button">‹</button>
+          <button class="banner-next" type="button">›</button>
+        </div>
 
 <!-- Wadah empat banner kecil -->
 <div class="banner-kecil-wrapper">
@@ -370,3 +401,161 @@
         buatBannerYouTube2();
       });
     </script>
+
+    <!-- JavaScript untuk menggeser banner utama -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const slider = document.getElementById("bannerSlider");
+        const track = document.getElementById("bannerTrack");
+
+        if (!slider || !track) return;
+
+        const banners = track.querySelectorAll(".banner-slide");
+        const tombolKiri = slider.querySelector(".banner-prev");
+        const tombolKanan = slider.querySelector(".banner-next");
+
+        let bannerAktif = 0;
+        let sedangDigeser = false;
+        let posisiAwal = 0;
+        let jarakGeser = 0;
+
+        const videoBannerUtama =
+  document.getElementById("videoBannerUtama");
+
+function putarVideoBannerUtama() {
+  if (
+    videoBannerUtama &&
+    !videoBannerUtama.getAttribute("src")
+  ) {
+    videoBannerUtama.setAttribute(
+      "src",
+      videoBannerUtama.dataset.src
+    );
+  }
+}
+
+        function tampilkanBanner(nomor) {
+  // Berhenti di banner pertama
+  if (nomor < 0) {
+    nomor = 0;
+  }
+
+  // Berhenti di banner terakhir
+  if (nomor > banners.length - 1) {
+    nomor = banners.length - 1;
+  }
+
+  bannerAktif = nomor;
+
+/* Putar video otomatis ketika banner kedua dibuka */
+if (bannerAktif === 1) {
+  putarVideoBannerUtama();
+}
+
+track.style.transition = "transform 0.45s ease";
+
+  track.style.transition = "transform 0.45s ease";
+  track.style.transform =
+    `translateX(-${bannerAktif * 100}%)`;
+
+  // Sembunyikan panah kiri pada banner pertama
+  tombolKiri.style.display =
+    bannerAktif === 0 ? "none" : "block";
+
+  // Sembunyikan panah kanan pada banner terakhir
+  tombolKanan.style.display =
+    bannerAktif === banners.length - 1 ? "none" : "block";
+}
+
+        function mulaiGeser(clientX) {
+          sedangDigeser = true;
+          posisiAwal = clientX;
+          jarakGeser = 0;
+          track.style.transition = "none";
+          slider.style.cursor = "grabbing";
+        }
+
+        function prosesGeser(clientX) {
+  if (!sedangDigeser) return;
+
+  jarakGeser = clientX - posisiAwal;
+
+  // Banner pertama tidak boleh digeser ke kanan
+  if (bannerAktif === 0 && jarakGeser > 0) {
+    jarakGeser = 0;
+  }
+
+  // Banner terakhir tidak boleh digeser ke kiri
+  if (
+    bannerAktif === banners.length - 1 &&
+    jarakGeser < 0
+  ) {
+    jarakGeser = 0;
+  }
+
+  const posisiBanner =
+    -(bannerAktif * slider.clientWidth);
+
+  track.style.transform =
+    `translateX(${posisiBanner + jarakGeser}px)`;
+}
+
+        function selesaiGeser() {
+          if (!sedangDigeser) return;
+
+          sedangDigeser = false;
+          slider.style.cursor = "grab";
+
+          const batasGeser = slider.clientWidth * 0.15;
+
+          if (jarakGeser < -batasGeser) {
+            tampilkanBanner(bannerAktif + 1);
+          } else if (jarakGeser > batasGeser) {
+            tampilkanBanner(bannerAktif - 1);
+          } else {
+            tampilkanBanner(bannerAktif);
+          }
+        }
+
+        slider.addEventListener("mousedown", function (event) {
+          event.preventDefault();
+          mulaiGeser(event.clientX);
+        });
+
+        window.addEventListener("mousemove", function (event) {
+          prosesGeser(event.clientX);
+        });
+
+        window.addEventListener("mouseup", selesaiGeser);
+
+        slider.addEventListener(
+          "touchstart",
+          function (event) {
+            mulaiGeser(event.touches[0].clientX);
+          },
+          { passive: true }
+        );
+
+        slider.addEventListener(
+          "touchmove",
+          function (event) {
+            prosesGeser(event.touches[0].clientX);
+          },
+          { passive: true }
+        );
+
+        slider.addEventListener("touchend", selesaiGeser);
+
+        tombolKiri.addEventListener("click", function (event) {
+          event.stopPropagation();
+          tampilkanBanner(bannerAktif - 1);
+        });
+
+        tombolKanan.addEventListener("click", function (event) {
+          event.stopPropagation();
+          tampilkanBanner(bannerAktif + 1);
+        });
+      });
+    </script>
+  </body>
+</html>
